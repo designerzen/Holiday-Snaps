@@ -1,0 +1,77 @@
+@import url("normalize");
+@import url("fonts");
+
+
+// Colours
+@col-text: #111;
+@col-pink: #aaffff;
+
+html, body 
+{
+    width:100%;
+	height:100%;
+	min-height:100%;
+}
+
+body{
+	font: 16px/26px "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+	font-weight: 300;
+	color:@col-text;
+}
+
+h1,h2,h3,h4,h5,h6{
+	font-family: 'dual300', Helvetica, Helvetica Neue, Arial;
+}
+
+textarea {
+    resize: vertical;
+}
+
+audio,
+canvas,
+iframe,
+img,
+svg,
+video {
+    vertical-align: middle;
+}
+
+fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* == == */
+.login{
+	margin:16px;
+	padding:16px;
+	border-radius:16px;
+	background-color:@col-pink;
+	
+	.try-again{
+		
+	}
+}
+
+
+/* == == */
+.uploader{
+	width:100%;
+	height:100%;
+}
+
+
+@import url("uploader");
+// @import url("gallery");
+
+/* ====== Media Queries ============================ */
+
+@media only screen and (min-width: 480px) {}
+
+@media only screen and (min-width: 768px) {}
+
+@media only screen and (min-width: 1140px) {}
+
+@import url("print");
