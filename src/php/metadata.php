@@ -12,17 +12,30 @@ class MetaDataHandler {
 	
     }
 
-	public function getMetaData($coordinate, $hemisphere)
+	public function getMetaData($filename)
 	{
-		$exif = exif_read_data($filename);
-		$latitude = gps($exif["GPSLatitude"], $exif['GPSLatitudeRef']);
-		$longitude = gps($exif["GPSLongitude"], $exif['GPSLongitudeRef']);
-		
-		$exif[latitude] = $latitude;
-		$exif[longitude] = $longitude;
-		
-		return $exif;
+		if (function_exists('exif_read_data'))
+		{
+			$exif = exif_read_data($filename);
+			
+			if (
+				( isset($exif["GPSLatitude"]) ) &&
+				( isset($exif["GPSLatitudeRef"]) ) &&
+				( isset($exif["GPSLongitude"]) ) &&
+				( isset($exif["GPSLongitudeRef"]) )
+			){
+				$exif["latitude"] = $this->gps($exif["GPSLatitude"], $exif['GPSLatitudeRef']);
+				$exif["longitude"] = $this->gps($exif["GPSLongitude"], $exif['GPSLongitudeRef']);
+				return $exif;
+			}
+			return $exif;
+			
+		}else {
+			return array();
+		}
 	}
+	
+	// 
 	
 	protected function gps($coordinate, $hemisphere)
 	{

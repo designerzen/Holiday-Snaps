@@ -1,0 +1,98 @@
+// https://ianlunn.github.io/Hover/
+
+@nameSpace: anim;
+
+
+// prefix keyframes
+.keyframes(@name; @content) {
+  @keyframes @name {
+    @content();
+  }
+}
+
+
+// As is often the case, some devices/browsers need additional code to get CSS to work
+// in the most desired way. These mixins are used to quickly drop in hacks for each element
+// Find out more here: https://github.com/IanLunn/Hover/wiki/Hacks-Explained
+.hardwareAccel() {
+	// Improve performance on mobile/tablet devices
+	transform: translateZ(0);
+}
+
+.improveAntiAlias() {
+	// Improve aliasing on mobile/tablet devices
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+}
+
+.fontSmooth() {
+	backface-visibility: hidden;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.forceBlockLevel() {
+	// Transforms need to be block-level to work
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.hacks() {
+	//.forceBlockLevel();
+	.hardwareAccel();
+	.improveAntiAlias();
+	.fontSmooth();
+}
+
+
+/* Buzz Out */
+.keyframes(~"@{nameSpace}-buzz-out", 
+{
+	10% {
+		transform:translateX(3px) rotate(2deg);
+	}
+
+	20% {
+		transform:translateX(-3px) rotate(-2deg);
+	}
+
+	30% {
+		transform:translateX(3px) rotate(2deg);
+	}
+
+	40% {
+		transform:translateX(-3px) rotate(-2deg);
+	}
+
+	50% {
+		transform:translateX(2px) rotate(1deg);
+	}
+
+	60% {
+		transform:translateX(-2px) rotate(-1deg);
+	}
+
+	70% {
+		transform:translateX(2px) rotate(1deg);
+	}
+
+	80% {
+		transform:translateX(-2px) rotate(-1deg);
+	}
+
+	90% {
+		transform:translateX(1px) rotate(0);
+	}
+
+	100% {
+		transform:translateX(-1px) rotate(0);
+	}
+});
+
+
+.buzz-out() 
+{
+	.hacks();
+	animation-name: ~"@{nameSpace}-buzz-out";
+	animation-duration: .75s;
+	animation-timing-function: linear;
+	animation-iteration-count: 1;
+}

@@ -1,12 +1,40 @@
-/* TYPE */
+@fonts-location:'../fonts/';
+
+// Dual for Headings
 @font-face {
     font-family: 'dual300';
-    src: url('../fonts/Dual-300-webfont.eot');
-    src: url('../fonts/Dual-300-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/Dual-300-webfont.woff2') format('woff2'),
-         url('../fonts/Dual-300-webfont.woff') format('woff'),
-         url('../fonts/Dual-300-webfont.ttf') format('truetype'),
-         url('../fonts/Dual-300-webfont.svg#dual300') format('svg');
+    src: url( '@{fonts-location}Dual-300-webfont.eot');
+    src: url( '@{fonts-location}Dual-300-webfont.eot?#iefix') format('embedded-opentype'),
+         url( '@{fonts-location}Dual-300-webfont.woff2') format('woff2'),
+         url( '@{fonts-location}Dual-300-webfont.woff') format('woff'),
+         url( '@{fonts-location}Dual-300-webfont.ttf') format('truetype'),
+         url( '@{fonts-location}Dual-300-webfont.svg#dual300') format('svg');
     font-weight: normal;
     font-style: normal;
+}
+
+// Lato for body
+@font-face {
+    font-family: 'Lato';
+    src: url( '@{fonts-location}Lato-Regular.eot'); /* IE9 Compat Modes */
+    src: url( '@{fonts-location}Lato-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url( '@{fonts-location}Lato-Regular.woff') format('woff'), /* Modern Browsers */
+         url( '@{fonts-location}Lato-Regular.ttf') format('truetype'); 
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
+body{
+	font: 16px/26px "Lato", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+}
+
+// a.download,
+#gallery-shortcut,
+h1,h2,h3,h4,h5,h6,
+.qq-upload-file,
+.qq-upload-button,
+.qq-upload-drop-area
+{
+	font-family: 'dual300', "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
 }

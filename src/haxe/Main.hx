@@ -11,8 +11,6 @@ So here it is, a very basic, single page web app that has various sections :
 
 package;
 
-//import googleAnalytics.Stats;
-
 class Main 
 {
 	

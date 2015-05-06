@@ -1,8 +1,10 @@
 package views;
 
+import controllers.Signals.Signal;
 import haxe.Template;
 import haxe.Http;
 import js.html.Element;
+import js.html.NodeList;
 
 import js.Lib;
 import js.Browser;
@@ -13,61 +15,88 @@ import js.html.InputElement;
 import js.html.LabelElement;
 import js.html.Event;
 
+import models.Picture;
+
 // import the interface for FineUploaderBasic
 
 class UploadView extends View
 {
+	public static inline var TEMPLATE:String 	= '<div id="upload-ui"></div><ol id="upload-list"></ol><a href="#gallery" id="gallery-shortcut" class="gallery--shortcut" data-scroll><span>View Gallery</span></a>';// "sections/thumbnails.html";
+	public static inline var UPLOAD:String 		= "./services/endpoint.php";
 
-	//var section:String = "sections/uploader.html";
-	public static inline var TEMPLATE:String = "sections/thumbnails.html";
+	var endpoint:String;
+	var debug:Bool;
 	
-	public function new( doc:Document, mediator:Mediator ) 
+	public var uploaded:Signal;
+	public var allLoaded:Signal;
+	
+	public function new( doc:Document, user:String, debugMode:Bool=false ) 
 	{
-		super( doc, mediator, 'uploader' );
-		loadTemplate( TEMPLATE );	// first transclude in the upload template
+		super( doc, null, 'uploader' );
+		debug = debugMode;
+		endpoint = UPLOAD + '?user=' + user;
+		
+		uploaded = new Signal();
+		allLoaded = new Signal();
+	}
+	
+	override public function initialise() 
+	{
+		transclude( TEMPLATE );
 	}
 	
 	override function transclude( data:String )
 	{
 		// transclude this raw data into the DOM
+		super.transclude(data);
+		
 		var uploaderID:String = 'qq-template';
-		var uploaderElement:Element = doc.getElementById( uploaderID );
-		
-		// get this DOM element and fill it with our template...
-		uploaderElement.innerHTML = data;
-		
-		/*
-		// update the view accordingly...
-		var sample:String = "My name is <strong>::name::</strong>, <em>::age::</em> years old";
-		var user = {name:"Mark", age:30};
-		var template:Template = new Template(sample);
-		var output:String = template.execute(user);
-		//trace(data);
-		//trace(output);
-		
-		//var div:DivElement = doc.createDivElement();
-		*/
+		var upload:Element = doc.getElementById( "upload-ui" );
+		var list:Element = doc.getElementById( "upload-list" );
 		
 		var options = {
 			
-			debug: true,
+			debug: debug,
 			template:uploaderID,
-			element:getView(),
+			element:upload,
+			listElement:list,
+			
+			includeExif:true,
+			
+			// acceptFiles:'',
+			allowedExtensions:['jpg','jpeg','png','tiff','mp3','mp4','m4a','mov','flv'],
+			
 			request: {
-				endpoint: './services/endpoint.php'
+				endpoint: endpoint
 			},
+			chunking: {
+				enabled: true,
+				mandatory: false,	// true here might help
+				concurrent: {
+					enabled: false
+				},
+				success: {
+					endpoint:endpoint +"&done"
+				}
+			},
+			deleteFile: {
+				enabled: false
+			},
+			retry: {
+			   enableAuto:false
+			},
+			showButton:true,
+			waitingPath:'../images/waiting-generic.png',
+			notAvailablePath:'../images/not_available-generic.png',
 			callbacks: {
 				// http://docs.fineuploader.com/branch/master/api/events.html
-				onUpload: onUpload,
-				onSubmitted: onSubmitted,
-				onCancel: onCancel,
+				onUpload: onUploadBegin,
+				//onSubmitted: onSubmitted,
+				//onCancel: onCancel,
 				onComplete: onComplete,
 				onAllComplete: onAllComplete,
-				onDelete: onDelete,
-				onDeleteComplete: onDeleteComplete,
 				onError:onError
 			}
-			
 		};
 		
 		// compiles to "new qq.FineUploader(options)"
@@ -75,45 +104,54 @@ class UploadView extends View
 		//var uploader = untyped __js__("new qq.FineUploaderBasic")(options);
 	}
 	
-	function onUpload (id:Int, name:String):Void {
-		
-	}
-	function onSubmitted (id:Int, name:String):Void {}
-	function onCancel (id:Int, name:String):Void { }
-	
-	function onComplete (id:Int, name:String, responseJSON, xhr):Void 
+	public function hideUploadStatus( e:Event ):Void
 	{
-		trace('Success! ' );
-		trace( responseJSON );
+		// simply removes all of the successful uploads from the list...
+		var uploads:NodeList = doc.getElementsByClassName('upload-success');
 	}
 	
-	function onAllComplete (succeeded:Array<Int>, failed:Array<Int>):Void 
+	function onUploadBegin (id:Int, name:String):Void 
+	{
+		trace('Uploaded : '+id+' called '+name );
+	}
+	
+	function onSubmitted (id:Int, name:String):Void 
+	{
+		// uploading commenced
+	}
+	
+	function onCancel (id:Int, name:String):Void 
+	{
+		// user cancelled!
+	}
+	
+	function onComplete (id:Int, name:String, responseJSON:Picture, xhr):Void 
+	{
+		trace( responseJSON );
+		uploaded.dispatch( responseJSON );
+	}
+	
+	function onAllComplete ( succeeded:Array<Int>, failed:Array<Int> ):Void 
 	{
 		if ( failed.length > 0 )
 		{
 			// Not all images uploaded successfully...
 		}
+		/*
+		// add button to hide the uploads
+		var hideButton:ButtonElement = doc.createButtonElement();
+		hideButton.textContent = "hide";  
+		hideButton.className = "uploader--hide";  
+		hideButton.onclick = hideUploadStatus;
 		
-		// add button to go to gallery
-		var galleryButton:ButtonElement = doc.createButtonElement();
-		galleryButton.textContent = "Continue";  
-		galleryButton.className = "uploader--continue";  
-		galleryButton.onclick = onExitRequested;
-		
-		view.appendChild( galleryButton );
+		view.appendChild( hideButton );
+		*/
+		allLoaded.dispatch( succeeded, failed );
 	}
 	
-	function onDelete(id:Int):Void { }
-	function onDeleteComplete(id:Int, xhr, isError):Void { }
-	
+	// issue occurred
 	function onError (id:Int, name:String, errorReason:String, xhr):Void
 	{ 
-		trace('Error in uploading this image '+errorReason );
+		Browser.window.console.error('Error in uploading this image '+errorReason );
 	}
-	
-	function onExitRequested(event:Event):Void 
-	{ 
-		proxy.onUploaded( );
-	}
-	
 }

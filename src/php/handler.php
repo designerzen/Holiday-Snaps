@@ -69,7 +69,7 @@ class UploadHandler {
 
         rmdir($targetFolder);
 
-        return array("success" => true, "uuid" => $uuid);
+        return array("success" => true, "uuid" => $uuid, "chunk" => false );
     }
 
     /**
@@ -163,7 +163,7 @@ class UploadHandler {
             $target = $targetFolder.'/'.$partIndex;
             $success = move_uploaded_file($_FILES[$this->inputName]['tmp_name'], $target);
 
-            return array("success" => true, "uuid" => $uuid);
+            return array("success" => true, "uuid" => $uuid, "chunk" => true );
 
         }
         else {
@@ -179,7 +179,7 @@ class UploadHandler {
                     mkdir(dirname($target));
                 }
                 if (move_uploaded_file($file['tmp_name'], $target)){
-                    return array('success'=> true, "uuid" => $uuid);
+                    return array('success'=> true, "uuid" => $uuid, "chunk" => false );
                 }
             }
 
@@ -193,7 +193,7 @@ class UploadHandler {
      * @param string $uploadDirectory Target directory.
      * @params string $name Overwrites the name of the file.
      *
-     */
+  
     public function handleDelete($uploadDirectory, $name=null)
     {
         if ($this->isInaccessible($uploadDirectory)) {
@@ -219,7 +219,8 @@ class UploadHandler {
         }
 
     }
-
+   */
+	
     /**
      * Returns a path to use with this upload. Check that the name does not exist,
      * and appends a suffix otherwise.

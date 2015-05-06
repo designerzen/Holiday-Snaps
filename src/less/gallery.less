@@ -1,9 +1,480 @@
+
+@space:0px;
+@gap:4px;
+
 .b-lazy {
-	transition: opacity 500ms ease-in-out;
-	max-width: 100%;
+	background:#262626 url("../images/uploader.gif") no-repeat center center;
+	transform: translateY(7px);
+	transition: opacity 500ms ease-in-out, transform 600ms ease-out;
 	opacity: 0;
 }
 
 .b-lazy.b-loaded {
+	background-image:none;
+	transform: translateY(0);
 	opacity: 1;
+}
+
+.b-error{
+	
+}
+
+.gallery{
+	//position:relative;
+	background-color:white;
+	color:white;
+	overflow:hidden;
+	visibility:hidden;
+	display:none;
+	/*
+	&:before, 
+	&:after{
+		content: ' ';
+		display: table;
+	}*/
+}
+
+
+// This is the tall and unwieldly Jump to Gallery Button
+#gallery-shortcut{
+	visibility:hidden;
+	position:absolute;
+	right:0;
+	top:40px;
+	bottom:0;
+	z-index:39;
+	width:25%;
+	//max-width:100px;
+	min-height:3em;
+	text-align:center;
+	text-decoration:none;
+	text-transform:uppercase;
+	
+	padding:18px 0 0 0;
+	
+	//background-color:@col-cta;
+	border-bottom: @col-light 1px dotted;
+	background-color:@col-cta-alpha;
+	transition:background-color 200ms ease-out;
+	// centralise button text
+	span{
+		position:absolute;
+		top:50%;
+		left:3px;
+		right:3px;
+		//height:24px;
+		padding:12px;
+		margin-top:-21px;
+		border-radius:6px;
+		background-color:@col-cta;
+		color:white;
+	}
+	
+	&:hover,&:focus{
+		text-decoration:none;
+		background-color:@col-cta;
+	}
+	
+	&:before,
+	&:after{
+		content:' ';
+		position:absolute;
+		left:0;
+		right:0;
+		background-color:@col-cta;
+		height:2%;
+	}
+	&:before{
+		top:0;
+	}
+	&:after{
+		bottom:0;
+	}
+	
+}
+
+// this is for when an image has been added...
+.not-empty{
+	.gallery{
+		visibility:visible;
+		display:block;
+	}
+
+	#gallery-shortcut{
+		visibility:visible;
+	}
+}
+
+.gallery--images{
+	
+	//position:relative;
+	
+	header{
+		margin:16px;
+		
+	}
+	h1,h2,h3,h4,p,small{
+		color:@col-grey;
+	}
+
+	.video, 
+	.picture{
+		display:block;
+		max-width: 100%;
+		height: auto;		
+		position:relative;
+		margin:2px;
+		
+		// Anchors ---
+		a{
+			text-decoration:none;
+			
+			&:hover{
+				color:@col-text;
+				text-decoration:none;
+			}
+		}
+		
+		a.download{
+			
+			position:absolute;
+			bottom:0;
+			left:0;
+			right:0;
+			z-index:7;
+			padding:24px 24px 16px 2px;
+			color:transparent;
+			background:transparent url("../images/download.svg") no-repeat center right;
+			text-align:right;
+			
+			
+			&:hover{
+				color:@col-dark;
+				background:@col-cta-alpha url("../images/download.svg") no-repeat center right;
+			}
+		}
+	
+	}
+	
+	.video{
+		border:@col-bg 1px solid;
+		box-shadow: 0 8px 6px -6px @col-bg;
+		
+		a.download{
+			
+			position:absolute;
+			top:0;
+			bottom:auto;
+		}
+		
+		//min-width:480px;
+		//min-height:320px;
+		
+		h4{
+			position:absolute;
+			top:0;
+			left:4px;
+			z-index:30;
+			padding:4px 12px;
+			color:@col-light;
+			opacity:0;
+			transform:translateX( -20px );
+			transition:opacity 400ms ease-out, transform 600ms ease-out;
+			background-color:@col-translucent-dark;
+			pointer-events:none;
+			span{
+				color:@col-grey;
+			}
+		}
+		
+		video{
+			//min-width:480px;
+			//height:auto;
+			width: 100%;
+		}
+		.vjs-fullscreen-control{
+			cursor: url("../images/zoomin.cur"), pointer !important;
+		}
+		
+		&:focus,
+		&:hover{
+			h4{
+				//visibility:visible;
+				transform:translateX( 0 );
+				opacity:1;
+			}
+		}
+	}
+	
+	.picture{
+		
+		//max-width: 100%;
+		display: inline-block;
+		vertical-align: top;
+		overflow:hidden;
+		
+		figure{
+			
+			margin:0 auto;
+			
+			img{
+				max-width: 100%;
+				height: auto;
+				margin:0;
+				border:@col-bg 1px solid;
+				box-shadow: 0 8px 6px -6px @col-bg;
+			}	
+			
+			figcaption{
+				position:absolute;
+				left:@gap;
+				bottom:@gap;
+				
+				border-radius:4px;
+				background-color:@col-translucent-dark;
+				z-index:19;
+				//visibility:hidden;
+				pointer-events:none;
+				margin:0;
+				transform:translateX( -20px );
+				transition:opacity 400ms ease-out, transform 600ms ease-out;
+				opacity:0;
+				
+				h4{
+					padding:4px 12px;
+					color:@col-light;
+					
+					span{
+						color:@col-grey;
+					}
+				}
+			}
+			
+			
+		}
+		&:focus,
+		&:hover{
+			figure figcaption{
+				//visibility:visible;
+				transform:translateX( 0 );
+				opacity:1;
+			}
+		}
+			
+			
+		a.fullscreen{
+			position:absolute;
+			top:@space;
+			right:@space;
+			
+			// swap this out for a small sized box
+			bottom:@space;
+			left:@space;
+			z-index:6;
+			
+			background-color:transparent;
+			color:transparent;
+			transition: background-color 100ms ease-in-out;
+			text-align:right;
+			cursor: url("../images/zoomin.cur"), pointer !important;
+			
+			&:hover{
+				color:transparent;
+				background:@col-highlight ;//url("../images/fullscreen.svg") no-repeat top left;
+			}
+		}
+		
+	}	
+}
+
+#gallery-full-size{
+	
+	position:fixed;
+	top:0;
+	right:0;
+	bottom:0;
+	left:0;
+	z-index:1003;
+	display:none;
+	background-color:black;
+	 
+	opacity: 0;
+	padding:16px;
+	//margin:10px;
+	
+	a{
+		text-decoration:none;
+		
+		&:hover{
+			color:@col-text;
+			text-decoration:none;
+		}
+	}
+		
+	a.download{
+		bottom:0;
+		left:0;
+		right:0;
+		position:absolute;
+		background:transparent url("../images/download.svg") no-repeat 5px center;
+		z-index:17;
+		color:transparent;
+		text-align:center;
+		padding:24px 24px 16px 24px;
+			
+		&:hover{
+			color:@col-light;
+			background:@col-cta-alpha url("../images/download.png") no-repeat 5px center;
+			text-decoration:none;
+		}
+	}
+	
+	a.fs-exit{
+		//content: @fullscreen-exit-icon;
+		content:@fullscreen-enter-icon;
+		
+		position:absolute;
+		top:@space;
+		right:@space;
+		bottom:@space;
+		left:@space;
+		z-index:-1;
+		background-color:transparent;
+		color:transparent;
+			
+		//transition: background-color 500ms ease-in-out;
+		&:hover{
+			cursor: url("../images/zoomout.cur"), pointer !important;
+			color:transparent;
+			//background:@col-rollover url("../images/download.png") no-repeat top right;
+			text-decoration:none;
+		}
+	}
+	
+	a.exit{
+		position:absolute;
+		top:0;
+		left:0;
+		z-index:999;
+		height:36px;
+		width:36px;
+		border-radius:0 36px 36px 36px;
+		overflow:hidden;
+		//margin-left:28px;
+		//padding-top:2px;
+		color:transparent;
+		background:white url("../images/close.svg") no-repeat center center;
+		opacity:0.6;
+		transition:opacity 200ms ease-out;
+		&:hover{
+			opacity:1;
+		}
+	}
+	
+	img{
+		height:auto;
+		object-fit:cover;
+		margin:auto;
+		border:@col-rollover 1px solid;
+		transition: opacity 500ms ease-in-out;//, translateY 500ms ease-in-out;
+		opacity: 0;
+	
+	}
+	
+	.magnifier{
+		pointer-events:none;
+		position:absolute;
+		left:0;
+		top:0;
+		background-color:@col-rollover;
+		border:@col-rollover 2px solid;
+		overflow:hidden;
+		background-repeat:no-repeat;
+		
+		.debug{
+			position:absolute;
+			top:0;
+			left:0;
+			color:white;
+			background-color:@col-bg;
+			font-size:0.7em;
+		}
+	}
+}
+
+
+#gallery-full-size.opened{
+	display:block;
+	display: flex;
+	opacity:1;
+	
+	transition: opacity 500ms ease-in-out;//, translateY 500ms ease-in-out;
+	transition-delay: .3s;
+	
+	img.loaded{
+		opacity:1;
+	}
+}
+
+#gallery-full-size.image-landscape{
+	img{
+		max-width:100%;
+		
+		height:auto;
+		max-height:100%;
+	}
+}
+#gallery-full-size.image-portrait{
+	img{
+		max-height:100%;
+		width:auto;
+	}
+}
+
+
+#gallery-pictures{
+	line-height: 0;	// Prevent vertical gaps
+	column-count: 1;
+	column-gap: 0px; 
+	display: flex;
+	margin-bottom:56px;
+	
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	//justify-content: space-between;
+	//justify-content: space-around;
+	align-items: baseline;// center| baseline | stretch;
+	align-content: flex-start;
+}
+
+// Media queries now set how many columns to show...
+
+@media only screen and (max-width: 480px) 
+{
+	#gallery-pictures{
+		column-count: 1;
+		flex-direction: column;
+	}
+}
+
+@media only screen and (min-width: 768px) 
+{
+	#gallery-pictures{
+		column-count: 2;
+	}
+	
+	#gallery-full-size{
+		padding:24px;
+	}
+}
+
+@media only screen and (min-width: 1140px)
+{
+	#gallery-pictures{
+		column-count: 3;
+	}
+	#gallery-full-size{
+		padding:32px;
+	}
 }

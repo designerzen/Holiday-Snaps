@@ -1,0 +1,52 @@
+@color : cyan;
+@spectrum : 20%;
+@duration : 1.25s;
+
+@a : 0 0, 100% 100%, 0 100%;
+@b : 100% 0, 100% 100%, 0 100%;
+@c : 100% 0, 100% 100%, 0 0;
+@d : 100% 0, 0 100%, 0 0;
+@e : 100% 100%, 0 100%, 0 0;
+
+@mixin path(@path) {
+	clip-path: polygon(@path);
+}
+
+div {
+	width: 50vmin;
+	height: 50vmin;
+	max-width: 150px;
+	max-height: 150px;
+	background: @color;
+	background-image: radial-gradient(rgba(@color, 0), rgba(@color, .5));
+	animation: load @duration ease-in-out infinite both;
+}
+
+@keyframes load {
+0% { 
+	@include path(@a); }
+25% { 
+	@include path(@b); 
+    background-color: adjust-hue(@color, @spectrum); }
+50% { 
+	@include path(@c); }
+75% { 
+	@include path(@d); 
+    background-color: adjust-hue(@color, -@spectrum); }
+100% { 
+	@include path(@e); }
+}
+
+
+body {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: radial-gradient(#444, #111);
+	animation: spin @duration*10 infinite;
+	overflow: hidden;
+}
+
+@keyframes spin {
+	to { transform: rotate(1turn); }
+}
